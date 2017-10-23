@@ -1,5 +1,10 @@
 function love.load()
   gamestate = 0
+  caveman = love.graphics.newImage("sprites/caveman.png")
+  bg = love.graphics.newImage("sprites/bg.png")
+  crosshair = love.graphics.newImage("sprites/crosshair.png")
+  floor = love.graphics.newImage("sprites/floor.png")
+  cavemanX = 0
 end
 
 function love.keyreleased(key)
@@ -21,20 +26,11 @@ function love.keyreleased(key)
 end
 
 function love.update(dt)
-  if gamestate == 0 then -- title screen
-    
-  end
-  if gamestate == 1 then -- game over screen
-    
-  end
   if gamestate == 2 then -- shop screen
     
   end
   if gamestate == 3 then -- game screen
-    
-  end
-  if gamestate == 4 then -- instructions screen
-    
+    cavemanX = cavemanX + 1
   end
 end
 
@@ -45,13 +41,15 @@ function love.draw()
     love.graphics.print("press ESCAPE to exit the game", 400-105, 400+100)
   end
   if gamestate == 1 then -- game over screen
-    
+    love.graphics.print("press ESCAPE to go back", 400-80, 400+100)
   end
   if gamestate == 2 then -- shop screen
     
   end
   if gamestate == 3 then -- game screen
-    
+    love.graphics.draw(bg)
+    love.graphics.draw(floor, 0, 400)
+    love.graphics.draw(caveman, cavemanX, 380)
   end
   if gamestate == 4 then -- instructions screen
     love.graphics.print("press ESCAPE to go back", 400-80, 400+100)
