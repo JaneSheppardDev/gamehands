@@ -1,25 +1,30 @@
 function love.load()
   gamestate = 0
-  caveman = love.graphics.newImage("sprites/caveman.png")
+  cavemanImage = love.graphics.newImage("sprites/caveman.png")
   bg = love.graphics.newImage("sprites/bg.png")
   crosshair = love.graphics.newImage("sprites/crosshair.png")
   floor = love.graphics.newImage("sprites/floor.png")
   cloud1 = love.graphics.newImage("sprites/cloud1.png")
   cloud2 = love.graphics.newImage("sprites/cloud2.png")
   sun = love.graphics.newImage("sprites/sun.png")
-  cavemanFastX = -50
-  cavemanSlowX = -50
-  cavemanX = -50
-  cavemanY = 400
+  
 end
 
 function love.keyreleased(key)
 	if key == "return" and gamestate == 0 then
     gamestate = 3
-    cavemanFastX = -50
-    cavemanSlowX = -50
-    cavemanX = -50
+    cavemen = {}
+    for i=1,20 do
+      caveman = {}
+      caveman.speed = (love.math.random(3,15)/10)
+      caveman.x = - (i*50)
+      caveman.y = love.math.random(400,550)
+      caveman.width = 22
+      caveman.height = 26
+      table.insert(cavemen,caveman)
+    end
     love.draw()
+    love.mouse.setVisible(false)
 	end
   if key == "space" and gamestate == 0 then
     gamestate = 4
@@ -30,22 +35,26 @@ function love.keyreleased(key)
   end
   if key == "escape" and (gamestate == 4 or gamestate == 3 or gamestate == 1) then
     gamestate = 0
+    love.mouse.setVisible(true)
     love.draw()
   end
 end
 
 function love.update(dt)
+
+
   if gamestate == 2 then -- shop screen
 
   end
   if gamestate == 3 then -- game screen
-    cavemanFastX = cavemanFastX + 2.0
-    cavemanSlowX = cavemanSlowX + 0.2
-    cavemanX = cavemanX + 0.7
-    if (cavemanX > 800 or cavemanFastX > 800 or cavemanSlowX > 800) then
-      gamestate = 1
+    for i,v in ipairs(cavemen) do
+      v.x = v.x + v.speed
+      if (v.x > 800) then
+        gamestate = 1
+      end
     end
   end
+  love.draw()
 end
 
 function love.draw()
@@ -61,12 +70,14 @@ function love.draw()
     
   end
   if gamestate == 3 then -- game screen
+    local cursorX = love.mouse.getX()
+    local cursorY = love.mouse.getY()
     love.graphics.draw(bg)
     love.graphics.draw(floor, 0, 400)
-    love.graphics.draw(caveman, cavemanX, cavemanY)
-    love.graphics.draw(caveman, cavemanFastX, cavemanY)
-    love.graphics.draw(caveman, cavemanSlowX, cavemanY)
-
+    for i,v in ipairs(cavemen) do
+      love.graphics.draw(cavemanImage, v.x, v.y)
+    end
+    love.graphics.draw(crosshair, cursorX-9, cursorY-9)
   end
   if gamestate == 4 then -- instructions screen
     love.graphics.print("press ESCAPE to go back", 400-80, 400+100)
