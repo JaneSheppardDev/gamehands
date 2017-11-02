@@ -7,12 +7,16 @@ function love.load()
   cloud1 = love.graphics.newImage("sprites/cloud1.png")
   cloud2 = love.graphics.newImage("sprites/cloud2.png")
   sun = love.graphics.newImage("sprites/sun.png")
-  score = 0
 end
 
 function love.keyreleased(key)
 	if key == "return" and gamestate == 0 then
     gamestate = 3
+    sunX = 50
+    cloud1X = -100
+    cloud2X = -100
+    cloud1Y = love.math.random(50,300)
+    cloud2Y = love.math.random(50,300)
     score = 0
     cavemen = {}
     for i=1,25 do
@@ -69,9 +73,20 @@ function love.update(dt)
         gamestate = 1
       end
     end
+    if cloud1X > 800 then
+      cloud1X = -100
+      cloud1Y = love.math.random(50,300)
+    end
+    if cloud2X > 800 then
+      cloud2X = -100
+      cloud2Y = love.math.random(50,300)
+    end
     if score == 25 then
       gamestate = 1
     end  
+    sunX = sunX + dt*10
+    cloud1X = cloud1X + dt*200
+    cloud2X = cloud2X + dt*150
   end
   love.draw()
 end
@@ -105,11 +120,16 @@ function love.draw()
     local cursorX = love.mouse.getX()
     local cursorY = love.mouse.getY()
     love.graphics.draw(bg)
+    love.graphics.draw(sun,sunX,100)
+    love.graphics.draw(cloud1,cloud1X,cloud1Y)
+    love.graphics.draw(cloud2,cloud2X,cloud2Y)
     love.graphics.draw(floor, 0, 400)
     for i,v in ipairs(cavemen) do
       love.graphics.draw(cavemanImage, v.x, v.y)
     end
+    love.graphics.setColor(0,0,0,255)
     love.graphics.print("Score:"..score,730,10)
+    love.graphics.setColor(255,255,255,255)
     love.graphics.draw(crosshair, cursorX-9, cursorY-9)
   end
   if gamestate == 4 then -- instructions screen
